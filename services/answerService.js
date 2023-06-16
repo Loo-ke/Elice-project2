@@ -67,9 +67,14 @@ const AnswerService = {
 		}
 	},
 
-	async getAnswersByQuestionId(questionId) {
+	async getAnswersByQuestionId(questionId, limit, skip) {
 		try {
-			const answers = await Answer.find({ questionId });
+			const answerCount = await Answer.find({questionId}).countDocuments({});
+			console.log(answerCount);
+			const answers = await Answer.find({ questionId })
+			.sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 			console.log(
 				`질문 ID(${questionId})에 대한 전체 공개 답변을 가져왔습니다.`
 			);

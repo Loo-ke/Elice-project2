@@ -79,9 +79,13 @@ const AnswerController = {
 			const{nickName} = req.user;
 			console.log('questionId로 답변 조회');
 			console.log(questionId);
-
+			const {page} = req.body;
+			
+			const limit = 12;
+			const skip = (page - 1) * limit;
       // db에서 모든 게시글 조회
-      const result = await answerService.getAnswersByQuestionId(questionId);
+      const result = await answerService.getAnswersByQuestionId(questionId, limit, skip)
+			
 			const img = await answerService.getProfileImage(nickName);
 			console.log("img",img)
 			function checkIfContainsName(arr, nickName) {
@@ -124,7 +128,12 @@ const AnswerController = {
     try {
       const { questionId } = req.params;
       const { nickName } = req.user;
-      const answers = await answerService.getPublicAnswers(questionId); // 전체 공개 게시글을 서비스에서 조회합니다.
+			const {page} = req.body;
+			
+			const limit = 12;
+			const skip = (page - 1) * limit;
+
+      const answers = await answerService.getPublicAnswers(questionId, limit, skip); // 전체 공개 게시글을 서비스에서 조회합니다.
 			const getPrivateAnswer = await answerService.getFriendAnswers(questionId); // 친구 공개 게시글을 서비스에서 조회합니다.
       const isWriteAnswer = checkIfMyNicknameExists(answers, getPrivateAnswer, nickName);
 
@@ -143,9 +152,13 @@ const AnswerController = {
 
 			console.log("questionId : ", questionId);
 			console.log("nickName : ", nickName);
+			const {page} = req.body;
+			
+			const limit = 12;
+			const skip = (page - 1) * limit;
 
 			// const answers = await answerService.getFriendsFriendPublicAnswers(nickName);
-			const answers = await answerService.getFriendOfFriendAnswers(questionId,nickName,email);// 내 친구들의 친구 공개 글 가져옴
+			const answers = await answerService.getFriendOfFriendAnswers(questionId,nickName,email, limit, );// 내 친구들의 친구 공개 글 가져옴
 
 			const getPublicAnswer = await answerService.getPublicAnswers(questionId); // 전체 공개 게시글을 서비스에서 조회합니다.
       const getPrivateanswers = await answerService.getFriendAnswers(questionId); // 친구 공개 게시글을 서비스에서 조회합니다.
